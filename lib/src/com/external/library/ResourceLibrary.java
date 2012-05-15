@@ -5,15 +5,15 @@ import java.util.concurrent.ConcurrentMap;
 
 public class ResourceLibrary
 {
-	private static final ConcurrentMap<Class<?>, Resource> cache = new ConcurrentHashMap<Class<?>, Resource>();
+	private static final ConcurrentMap<Class<?>, Resource> lookup = new ConcurrentHashMap<Class<?>, Resource>();
 
 	public static Resource getResource(Class<?> clazz)
 	{
-		if (!cache.containsKey(clazz))
+		if (!lookup.containsKey(clazz))
 		{
-			cache.putIfAbsent(clazz, new Resource());
+			lookup.putIfAbsent(clazz, new Resource());
 		}
 
-		return cache.get(clazz);
+		return lookup.get(clazz);
 	}
 }

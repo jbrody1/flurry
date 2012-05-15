@@ -1,7 +1,8 @@
-<project name="lib" default="jar" basedir=".">
+<project default="jar">
 	<description>build the api</description>
 
-	<property name="src" location="src" />
+	<property environment="env"/>
+	<property name="proj" value="${env.project}" />
 	<property name="build" location="bin" />
 	<property name="dist" location="dist" />
 
@@ -9,17 +10,12 @@
 		<mkdir dir="${build}" />
 	</target>
 
-	<target name="compile" depends="init" description="compile the source ">
-		<javac srcdir="${src}" destdir="${build}" includeantruntime="false"/>
-	</target>
-
-	<target name="jar" depends="compile" description="generate the jar file">
+	<target name="jar" depends="init" description="generate the jar file">
 		<mkdir dir="${dist}" />
-		<jar jarfile="${dist}/lib.jar" basedir="${build}" />
+		<jar jarfile="${dist}/${proj}.jar" basedir="${build}" />
 	</target>
 
 	<target name="clean" description="clean up">
-		<delete dir="${build}" />
 		<delete dir="${dist}" />
 	</target>
 </project>

@@ -9,10 +9,11 @@ import com.external.library.ResourceLibrary;
 @SuppressWarnings("unused")
 public class Container
 {
-	private final ClassLoaderFactory factory;
+	private final IClassLoaderFactory factory;
+	private final Resource resource = ResourceLibrary.getResource(Container.class);
 	private final Collection<IModule> modules = new ConcurrentLinkedQueue<IModule>();
 
-	public Container(ClassLoaderFactory factory)
+	public Container(IClassLoaderFactory factory)
 	{
 		this.factory = factory;
 	}
@@ -25,8 +26,6 @@ public class Container
 		Class<? extends IModule> clazz = (Class<? extends IModule>) moduleLoader.loadClass(moduleClass);
 		IModule module = clazz.newInstance();
 		modules.add(module);
-
-		Resource resource = ResourceLibrary.getResource(Container.class);
 	}
 
 	public void clearModules()

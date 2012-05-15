@@ -1,6 +1,6 @@
 package com.flurry.example;
 
-public interface ClassLoaderFactory
+public interface IClassLoaderFactory
 {
 	public ClassLoader factory();
 }

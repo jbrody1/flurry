@@ -2,7 +2,6 @@ package com.flurry.example;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -18,38 +17,30 @@ public class ContainerTest
 	private static final int bytesPerMb = 1024 * 1024;
 
 	// class path of the module to load
-	private static final String modulePath = "../module/bin/";
-	private static final String jarPath = "../api/dist/api.jar";
-	
-	// package prefix under which all user code can be found
+	private static final String moduleJar = "../module/dist/module.jar";
+	private static final String apiJar = "../api/dist/api.jar";
+	private static final String libJar = "../lib/dist/lib.jar";
+
+	// package prefix under which all internal code can be found
 	private static final String flurryPrefix = "com.flurry.example.";
 	
 	// fully qualified class name of the module to load
 	private static final String moduleClass = flurryPrefix + "Module";
-
-	private static URL buildFileUrl(String path) throws MalformedURLException
-	{
-		return new File(modulePath).toURI().toURL();
-	}
-
-	private static URL buildJarUrl(String path) throws MalformedURLException
-	{
-		return new URL("jar", "", "file:" + new File(path).getAbsolutePath() + "!/");
-	}
 
 	private URL[] urls;
 
 	@Before
 	public void setupClassPath() throws MalformedURLException
 	{
-		urls = new URL[] { buildFileUrl(modulePath),
-		                   buildJarUrl(jarPath)};
+		urls = new URL[] { URLUtils.buildJarUrl(moduleJar),		// required
+		                   URLUtils.buildJarUrl(apiJar),		// not required, but exposes a problem with post-delegation
+		                   URLUtils.buildJarUrl(libJar) };		// not required, but exposes a problem with default delegation 
 	}
 
 	@Test
 	public void testDefaultClassLoader() throws Exception
 	{
-		test(new ClassLoaderFactory()
+		test(new IClassLoaderFactory()
 		{
 			public ClassLoader factory()
 			{
@@ -62,7 +53,7 @@ public class ContainerTest
 	@Test
 	public void testStandAloneClassLoader() throws Exception
 	{
-		test(new ClassLoaderFactory()
+		test(new IClassLoaderFactory()
     	{
 			public ClassLoader factory()
 			{
@@ -75,7 +66,7 @@ public class ContainerTest
 	@Test
 	public void testPostDelegationClassLoader() throws Exception
 	{
-		test(new ClassLoaderFactory()
+		test(new IClassLoaderFactory()
     	{
 			public ClassLoader factory()
 			{
@@ -88,7 +79,7 @@ public class ContainerTest
 	@Test
 	public void testConditionalDelegationClassLoader() throws Exception
 	{
-		test(new ClassLoaderFactory()
+		test(new IClassLoaderFactory()
     	{
 			public ClassLoader factory()
 			{
@@ -99,7 +90,7 @@ public class ContainerTest
 		});
 	}
 
-	private void test(ClassLoaderFactory factory) throws Exception
+	private void test(IClassLoaderFactory factory) throws Exception
 	{
 		System.gc();
 		Container container = new Container(factory);
@@ -116,7 +107,7 @@ public class ContainerTest
 			System.gc();
 		}
 
-		System.gc();
+		// this is not scientific, but seems to work pretty well
 		long memLeaked = (Runtime.getRuntime().totalMemory() - memUsed) / bytesPerMb;
 		System.out.println("Leaked " + memLeaked + "MB");
 		assertTrue(memLeaked < 100);

@@ -12,10 +12,9 @@ public class Module implements IModule
 	 */
 	private static final byte[] bytes = new byte[1024 * 1024 * 100];
 
-	private final Resource resource;
-	
+	private final Resource resource = ResourceLibrary.getResource(Module.class);
+
 	public Module()
 	{
-		resource = ResourceLibrary.getResource(Module.class);
 	}
 }
