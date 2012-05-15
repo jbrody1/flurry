@@ -3,15 +3,22 @@ package com.flurry.example.classLoader;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-public class FilterClassLoader extends URLClassLoader
+public class ConditionalDelegationClassLoader extends URLClassLoader
 {
 	private final String parentPrefix;
+	private final String childPrefix;
 
-	public FilterClassLoader(URL[] urls, ClassLoader parent, String parentPrefix)
+	public ConditionalDelegationClassLoader(URL[] urls, String parentPrefix)
 	{
-		super(urls, parent);
+		this(urls, parentPrefix, null);
+	}
+
+	public ConditionalDelegationClassLoader(URL[] urls, String parentPrefix, String childPrefix)
+	{
+		super(urls);
 
 		this.parentPrefix = parentPrefix;
+		this.childPrefix = childPrefix;
 	}
 
 	@Override
@@ -21,7 +28,7 @@ public class FilterClassLoader extends URLClassLoader
 
 		if (c == null)
 		{
-			boolean parentFirst = name.startsWith(parentPrefix);
+			boolean parentFirst = name.startsWith(parentPrefix) && (childPrefix == null || !name.startsWith(childPrefix));
 
 			if (parentFirst)
 			{

@@ -5,9 +5,9 @@ import java.net.URLClassLoader;
 
 public class PostDelegationClassLoader extends URLClassLoader
 {
-	public PostDelegationClassLoader(URL[] urls, ClassLoader parent)
+	public PostDelegationClassLoader(URL[] urls)
 	{
-		super(urls, parent);
+		super(urls);
 	}
 
 	@Override
