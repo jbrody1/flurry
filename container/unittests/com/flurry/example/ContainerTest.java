@@ -1,6 +1,6 @@
 package com.flurry.example;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.flurry.example.classLoader.ConditionalDelegationClassLoader;
+import com.flurry.example.classLoader.IClassLoaderFactory;
 import com.flurry.example.classLoader.PostDelegationClassLoader;
 import com.flurry.example.classLoader.StandAloneClassLoader;
 
@@ -96,22 +97,24 @@ public class ContainerTest
 		return moduleClass;
 	}
 
-	protected IContainer buildContainer(IClassLoaderFactory factory)
+	protected IContainer buildContainer()
 	{
-		return new Container(factory);
+		return new Container();
 	}
 
 	private void test(IClassLoaderFactory factory) throws Exception
 	{
 		System.gc();
 		String moduleClass = getModuleClass();
-		IContainer container = buildContainer(factory);
+		IContainer container = buildContainer();
 		long memStart = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 
 		for (int i=0; i<4; i++)
 		{
+			ClassLoader moduleLoader = factory.factory();
+
 			// load the module
-			container.loadModule(moduleClass);
+			container.loadModule(moduleLoader, moduleClass);
 
 			// now free the module
 			container.clearModules();
@@ -119,10 +122,9 @@ public class ContainerTest
 			System.gc();
 		}
 
-		// this is not scientific, but seems to work pretty well
 		long memEnd = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		long memLeaked = (memEnd - memStart) / bytesPerMb;
 		System.out.println("Leaked " + memLeaked + "MB");
-		assertTrue(memLeaked == 0);
+		assertEquals(0, memLeaked);
 	}
 }

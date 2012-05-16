@@ -13,8 +13,8 @@ public class ContainerUsingLibraryTest extends ContainerTest
 	}
 
 	@Override
-	protected IContainer buildContainer(IClassLoaderFactory factory)
+	protected IContainer buildContainer()
 	{
-		return new ContainerUsingLibrary(factory);
+		return new ContainerUsingLibrary();
 	}
 }

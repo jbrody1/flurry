@@ -22,19 +22,20 @@ public class ConditionalDelegationClassLoader extends URLClassLoader
 	}
 
 	@Override
-	public Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException
+	public Class<?> loadClass(String name) throws ClassNotFoundException
 	{
 		Class<?> c = findLoadedClass(name);
 
 		if (c == null)
 		{
-			boolean parentFirst = name.startsWith(parentPrefix) && (childPrefix == null || !name.startsWith(childPrefix));
+			boolean parentFirst = (parentPrefix == null || name.startsWith(parentPrefix)) && // load from parent
+								  (childPrefix == null || !name.startsWith(childPrefix));	 // don't load from child
 
 			if (parentFirst)
 			{
 				try
 				{
-					c = super.loadClass(name, resolve);
+					c = super.loadClass(name);
 				}
 				catch (ClassNotFoundException e)
 				{
@@ -51,17 +52,12 @@ public class ConditionalDelegationClassLoader extends URLClassLoader
 				{
 					if (parentFirst)
 					{
-						throw e;
+						throw e; // we didn't find it in the parent or the child
 					}
 					else
 					{
-						c = super.loadClass(name, resolve);
+						c = super.loadClass(name); // load from the parent now
 					}
-				}
-
-				if (resolve)
-				{
-				    resolveClass(c);
 				}
 			}
 		}

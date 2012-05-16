@@ -5,17 +5,10 @@ import java.util.HashSet;
 
 public class Container implements IContainer
 {
-	private final IClassLoaderFactory factory;
 	private final Collection<ClassLoader> loaders = new HashSet<ClassLoader>();
 
-	public Container(IClassLoaderFactory factory)
+	public synchronized void loadModule(ClassLoader moduleLoader, String moduleClass) throws ClassNotFoundException, InstantiationException, IllegalAccessException
 	{
-		this.factory = factory;
-	}
-
-	public synchronized void loadModule(String moduleClass) throws ClassNotFoundException, InstantiationException, IllegalAccessException
-	{
-		ClassLoader moduleLoader = factory.factory();
 		Class<?> clazz = moduleLoader.loadClass(moduleClass);
 		
 		// don't cast this reference to anything, not even Object
@@ -25,7 +18,7 @@ public class Container implements IContainer
 		loaders.add(moduleLoader);
 	}
 
-	public void clearModules()
+	public synchronized void clearModules()
 	{
 		loaders.clear();
 	}
