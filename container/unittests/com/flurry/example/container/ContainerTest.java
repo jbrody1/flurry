@@ -1,4 +1,4 @@
-package com.flurry.example;
+package com.flurry.example.container;
 
 import static org.junit.Assert.assertEquals;
 
@@ -9,10 +9,10 @@ import java.net.URLClassLoader;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.flurry.example.classLoader.ConditionalDelegationClassLoader;
-import com.flurry.example.classLoader.IClassLoaderFactory;
-import com.flurry.example.classLoader.PostDelegationClassLoader;
-import com.flurry.example.classLoader.StandAloneClassLoader;
+import com.flurry.example.container.classLoader.ConditionalDelegationClassLoader;
+import com.flurry.example.container.classLoader.IClassLoaderFactory;
+import com.flurry.example.container.classLoader.PostDelegationClassLoader;
+import com.flurry.example.container.classLoader.StandAloneClassLoader;
 
 public class ContainerTest
 {
@@ -25,7 +25,7 @@ public class ContainerTest
 	private static final String libJar = "../lib/dist/lib.jar";
 
 	// fully qualified class name of the module to load
-	private static final String moduleClass = flurryPrefix + "Module";
+	private static final String moduleClass = flurryPrefix + "module.Module";
 
 	private static final int bytesPerMb = 1024 * 1024;
 
@@ -104,9 +104,10 @@ public class ContainerTest
 
 	private void test(IClassLoaderFactory factory) throws Exception
 	{
-		System.gc();
 		String moduleClass = getModuleClass();
 		IContainer container = buildContainer();
+
+		System.gc();
 		long memStart = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 
 		for (int i=0; i<4; i++)
@@ -118,10 +119,9 @@ public class ContainerTest
 
 			// now free the module
 			container.clearModules();
-
-			System.gc();
 		}
 
+		System.gc();
 		long memEnd = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		long memLeaked = (memEnd - memStart) / bytesPerMb;
 		System.out.println("Leaked " + memLeaked + "MB");

@@ -1,4 +1,4 @@
-package com.flurry.example.classLoader;
+package com.flurry.example.container.classLoader;
 
 public interface IClassLoaderFactory
 {
