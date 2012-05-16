@@ -11,7 +11,7 @@ public class Container implements IContainer
 	{
 		Class<?> clazz = moduleLoader.loadClass(moduleClass);
 		
-		// don't cast this reference to anything, not even Object
+		// create the module, but don't do anything with it
 		clazz.newInstance();
 
 		// keep a reference to the class loader so the module sticks around for a bit
