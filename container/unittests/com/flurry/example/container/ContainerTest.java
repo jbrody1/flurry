@@ -9,27 +9,24 @@ import java.net.URLClassLoader;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.flurry.example.container.classLoader.ConditionalDelegationClassLoader;
-import com.flurry.example.container.classLoader.IClassLoaderFactory;
-import com.flurry.example.container.classLoader.PostDelegationClassLoader;
-import com.flurry.example.container.classLoader.StandAloneClassLoader;
-
 public class ContainerTest
 {
-	// package prefix under which all internal code can be found
-	static final String flurryPrefix = "com.flurry.example.";
-	
 	// class path of the module to load
 	private static final String moduleJar = "../module/dist/module.jar";
 	private static final String apiJar = "../api/dist/api.jar";
 	private static final String libJar = "../lib/dist/lib.jar";
 
 	// fully qualified class name of the module to load
-	private static final String moduleClass = flurryPrefix + "module.Module";
+	private static final String moduleClass = "com.flurry.example.module.Module";
 
 	private static final int bytesPerMb = 1024 * 1024;
 
-	private URL[] urls;
+	protected static interface IClassLoaderFactory
+	{
+		public ClassLoader factory();
+	}
+
+	protected URL[] urls;
 
 	@Before
 	public void setupClassPath() throws MalformedURLException
@@ -46,48 +43,8 @@ public class ContainerTest
 		{
 			public ClassLoader factory()
 			{
-				// load classes from the parent before the child
+				// load classes using the default delegation strategy
 				return new URLClassLoader(urls);
-			}
-		});
-	}
-
-	@Test
-	public void testStandAloneClassLoader() throws Exception
-	{
-		test(new IClassLoaderFactory()
-    	{
-			public ClassLoader factory()
-			{
-				// don't load any classes from the parent
-				return new StandAloneClassLoader(urls);
-			}
-		});
-	}
-
-	@Test
-	public void testPostDelegationClassLoader() throws Exception
-	{
-		test(new IClassLoaderFactory()
-    	{
-			public ClassLoader factory()
-			{
-				// load classes from the child before the parent
-				return new PostDelegationClassLoader(urls);
-			}
-		});
-	}
-
-	@Test
-	public void testConditionalDelegationClassLoader() throws Exception
-	{
-		test(new IClassLoaderFactory()
-    	{
-			public ClassLoader factory()
-			{
-				// load our classes from the parent before the child,
-				// all other from the child before the parent
-				return new ConditionalDelegationClassLoader(urls, flurryPrefix);
 			}
 		});
 	}
@@ -102,7 +59,7 @@ public class ContainerTest
 		return new Container();
 	}
 
-	private void test(IClassLoaderFactory factory) throws Exception
+	protected void test(IClassLoaderFactory factory) throws Exception
 	{
 		String moduleClass = getModuleClass();
 		IContainer container = buildContainer();

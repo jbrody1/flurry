@@ -1,13 +1,9 @@
 package com.flurry.example.container;
 
-import com.flurry.example.container.ContainerUsingLibrary;
-import com.flurry.example.container.IContainer;
-
-
-public class ContainerUsingLibraryTest extends ContainerTest
+public class ContainerUsingLibraryTest extends ContainerUsingInterfaceTest
 {
 	// fully qualified class name of the module to load
-	private static final String moduleClass = flurryPrefix + "module.ModuleUsingLibrary";
+	private static final String moduleClass = "com.flurry.example.module.ModuleUsingLibrary";
 
 	@Override
 	protected String getModuleClass()
