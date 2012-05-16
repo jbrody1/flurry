@@ -1,35 +1,37 @@
 package com.flurry.example;
 
 import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.HashSet;
 
-import com.external.library.Resource;
-import com.external.library.ResourceLibrary;
-
-@SuppressWarnings("unused")
 public class Container
 {
-	private final IClassLoaderFactory factory;
-	private final Resource resource = ResourceLibrary.getResource(Container.class);
-	private final Collection<IModule> modules = new ConcurrentLinkedQueue<IModule>();
+	public static interface IClassLoaderFactory
+	{
+		public ClassLoader factory();
+	}
+
+	protected final IClassLoaderFactory factory;
+	private final Collection<ClassLoader> loaders = new HashSet<ClassLoader>();
 
 	public Container(IClassLoaderFactory factory)
 	{
 		this.factory = factory;
 	}
 
-	public void loadModule(String moduleClass) throws ClassNotFoundException, InstantiationException, IllegalAccessException
+	public synchronized void loadModule(String moduleClass) throws ClassNotFoundException, InstantiationException, IllegalAccessException
 	{
 		ClassLoader moduleLoader = factory.factory();
+		Class<?> clazz = moduleLoader.loadClass(moduleClass);
+		
+		// don't cast this reference to anything, not even Object
+		clazz.newInstance();
 
-		@SuppressWarnings("unchecked")
-		Class<? extends IModule> clazz = (Class<? extends IModule>) moduleLoader.loadClass(moduleClass);
-		IModule module = clazz.newInstance();
-		modules.add(module);
+		// keep a reference to the class loader so the module sticks around for a bit
+		loaders.add(moduleLoader);
 	}
 
 	public void clearModules()
 	{
-		modules.clear();
+		loaders.clear();
 	}
 }

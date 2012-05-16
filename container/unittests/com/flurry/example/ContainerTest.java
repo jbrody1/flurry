@@ -9,23 +9,25 @@ import java.net.URLClassLoader;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.flurry.example.Container.IClassLoaderFactory;
 import com.flurry.example.classLoader.ConditionalDelegationClassLoader;
 import com.flurry.example.classLoader.PostDelegationClassLoader;
+import com.flurry.example.classLoader.StandAloneClassLoader;
 
 public class ContainerTest
 {
-	private static final int bytesPerMb = 1024 * 1024;
-
+	// package prefix under which all internal code can be found
+	static final String flurryPrefix = "com.flurry.example.";
+	
 	// class path of the module to load
 	private static final String moduleJar = "../module/dist/module.jar";
 	private static final String apiJar = "../api/dist/api.jar";
 	private static final String libJar = "../lib/dist/lib.jar";
 
-	// package prefix under which all internal code can be found
-	private static final String flurryPrefix = "com.flurry.example.";
-	
 	// fully qualified class name of the module to load
 	private static final String moduleClass = flurryPrefix + "Module";
+
+	private static final int bytesPerMb = 1024 * 1024;
 
 	private URL[] urls;
 
@@ -58,7 +60,7 @@ public class ContainerTest
 			public ClassLoader factory()
 			{
 				// don't load any classes from the parent
-				return new URLClassLoader(urls, null);
+				return new StandAloneClassLoader(urls);
 			}
 		});
 	}
@@ -90,11 +92,22 @@ public class ContainerTest
 		});
 	}
 
+	protected String getModuleClass()
+	{
+		return moduleClass;
+	}
+
+	protected Container buildContainer(IClassLoaderFactory factory)
+	{
+		return new Container(factory);
+	}
+
 	private void test(IClassLoaderFactory factory) throws Exception
 	{
 		System.gc();
-		Container container = new Container(factory);
-		long memUsed = Runtime.getRuntime().totalMemory();
+		String moduleClass = getModuleClass();
+		Container container = buildContainer(factory);
+		long memStart = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 
 		for (int i=0; i<4; i++)
 		{
@@ -108,8 +121,9 @@ public class ContainerTest
 		}
 
 		// this is not scientific, but seems to work pretty well
-		long memLeaked = (Runtime.getRuntime().totalMemory() - memUsed) / bytesPerMb;
+		long memEnd = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+		long memLeaked = (memEnd - memStart) / bytesPerMb;
 		System.out.println("Leaked " + memLeaked + "MB");
-		assertTrue(memLeaked < 100);
+		assertTrue(memLeaked == 0);
 	}
 }
