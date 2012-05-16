@@ -1,11 +1,10 @@
 package com.flurry.example;
 
-import com.flurry.example.Container.IClassLoaderFactory;
 
 public class ContainerUsingInterfaceTest extends ContainerTest
 {
 	@Override
-	protected Container buildContainer(IClassLoaderFactory factory)
+	protected IContainer buildContainer(IClassLoaderFactory factory)
 	{
 		return new ContainerUsingInterface(factory);
 	}

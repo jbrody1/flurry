@@ -9,7 +9,6 @@ import java.net.URLClassLoader;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.flurry.example.Container.IClassLoaderFactory;
 import com.flurry.example.classLoader.ConditionalDelegationClassLoader;
 import com.flurry.example.classLoader.PostDelegationClassLoader;
 import com.flurry.example.classLoader.StandAloneClassLoader;
@@ -97,7 +96,7 @@ public class ContainerTest
 		return moduleClass;
 	}
 
-	protected Container buildContainer(IClassLoaderFactory factory)
+	protected IContainer buildContainer(IClassLoaderFactory factory)
 	{
 		return new Container(factory);
 	}
@@ -106,7 +105,7 @@ public class ContainerTest
 	{
 		System.gc();
 		String moduleClass = getModuleClass();
-		Container container = buildContainer(factory);
+		IContainer container = buildContainer(factory);
 		long memStart = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 
 		for (int i=0; i<4; i++)

@@ -3,13 +3,14 @@ package com.flurry.example;
 import java.util.Collection;
 import java.util.HashSet;
 
-public class ContainerUsingInterface extends Container
+public class ContainerUsingInterface implements IContainer
 {
+	private final IClassLoaderFactory factory;
 	private final Collection<IModule> modules = new HashSet<IModule>();
 
 	public ContainerUsingInterface(IClassLoaderFactory factory)
 	{
-		super(factory);
+		this.factory = factory;
 	}
 
 	public synchronized void loadModule(String moduleClass) throws ClassNotFoundException, InstantiationException, IllegalAccessException

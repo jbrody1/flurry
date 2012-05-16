@@ -1,6 +1,5 @@
 package com.flurry.example;
 
-import com.flurry.example.Container.IClassLoaderFactory;
 
 public class ContainerUsingLibraryTest extends ContainerTest
 {
@@ -14,7 +13,7 @@ public class ContainerUsingLibraryTest extends ContainerTest
 	}
 
 	@Override
-	protected Container buildContainer(IClassLoaderFactory factory)
+	protected IContainer buildContainer(IClassLoaderFactory factory)
 	{
 		return new ContainerUsingLibrary(factory);
 	}

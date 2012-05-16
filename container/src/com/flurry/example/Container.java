@@ -3,14 +3,9 @@ package com.flurry.example;
 import java.util.Collection;
 import java.util.HashSet;
 
-public class Container
+public class Container implements IContainer
 {
-	public static interface IClassLoaderFactory
-	{
-		public ClassLoader factory();
-	}
-
-	protected final IClassLoaderFactory factory;
+	private final IClassLoaderFactory factory;
 	private final Collection<ClassLoader> loaders = new HashSet<ClassLoader>();
 
 	public Container(IClassLoaderFactory factory)
