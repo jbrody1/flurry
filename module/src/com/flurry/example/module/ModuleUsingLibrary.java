@@ -1,4 +1,4 @@
-package com.flurry.example;
+package com.flurry.example.module;
 
 import com.external.library.Resource;
 import com.external.library.ResourceLibrary;

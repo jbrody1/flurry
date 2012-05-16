@@ -1,4 +1,6 @@
-package com.flurry.example;
+package com.flurry.example.module;
+
+import com.flurry.example.IModule;
 
 
 @SuppressWarnings("unused")

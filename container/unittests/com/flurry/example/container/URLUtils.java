@@ -1,4 +1,4 @@
-package com.flurry.example;
+package com.flurry.example.container;
 
 import java.io.File;
 import java.net.MalformedURLException;

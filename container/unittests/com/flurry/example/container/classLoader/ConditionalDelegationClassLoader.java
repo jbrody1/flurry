@@ -1,4 +1,4 @@
-package com.flurry.example.classLoader;
+package com.flurry.example.container.classLoader;
 
 import java.net.URL;
 import java.net.URLClassLoader;

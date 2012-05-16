@@ -1,4 +1,4 @@
-package com.flurry.example;
+package com.flurry.example.container;
 
 import static org.junit.Assert.assertEquals;
 
@@ -9,10 +9,10 @@ import java.net.URLClassLoader;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.flurry.example.classLoader.ConditionalDelegationClassLoader;
-import com.flurry.example.classLoader.IClassLoaderFactory;
-import com.flurry.example.classLoader.PostDelegationClassLoader;
-import com.flurry.example.classLoader.StandAloneClassLoader;
+import com.flurry.example.container.classLoader.ConditionalDelegationClassLoader;
+import com.flurry.example.container.classLoader.IClassLoaderFactory;
+import com.flurry.example.container.classLoader.PostDelegationClassLoader;
+import com.flurry.example.container.classLoader.StandAloneClassLoader;
 
 public class ContainerTest
 {

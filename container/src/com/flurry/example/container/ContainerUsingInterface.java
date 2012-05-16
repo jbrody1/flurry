@@ -1,7 +1,9 @@
-package com.flurry.example;
+package com.flurry.example.container;
 
 import java.util.Collection;
 import java.util.HashSet;
+
+import com.flurry.example.IModule;
 
 public class ContainerUsingInterface implements IContainer
 {
