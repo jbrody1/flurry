@@ -1,6 +1,6 @@
 package com.flurry.example.container;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -12,6 +12,7 @@ public class ContainerTest
 {
 	// class path of the module to load
 	protected static final String moduleJar = "../module/dist/module.jar";
+	protected static final String apiJar = "../api/dist/api.jar";
 
 	// fully qualified class name of the module to load
 	private static final String moduleClass = "com.flurry.example.module.Module";
@@ -57,7 +58,7 @@ public class ContainerTest
 		System.gc();
 		long memStart = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 
-		for (int i=0; i<4; i++)
+		for (int i=0; i<100; i++)
 		{
 			ClassLoader moduleLoader = factory.factory();
 
@@ -66,12 +67,13 @@ public class ContainerTest
 
 			// now free the module
 			container.clearModules();
+			System.gc();
 		}
 
 		System.gc();
 		long memEnd = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-		long mbLeaked = memEnd > memStart ? (memEnd - memStart) >> 20 : 0;
-		System.out.println("Leaked " + mbLeaked + "MB");
-		assertEquals(0, mbLeaked);
+		long kbLeaked = memEnd > memStart ? (memEnd - memStart) >> 10 : 0;
+		System.out.println("Leaked " + kbLeaked + "KB");
+		assertTrue(kbLeaked < 10);
 	}
 }

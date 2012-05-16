@@ -11,9 +11,6 @@ import com.flurry.example.container.classLoader.StandAloneClassLoader;
 
 public class ContainerUsingInterfaceTest extends ContainerTest
 {
-	// dependencies of the module to load
-	protected static final String apiJar = "../api/dist/api.jar";
-
 	// package prefix under which all internal code can be found
 	private static final String flurryPrefix = "com.flurry.example.";
 
