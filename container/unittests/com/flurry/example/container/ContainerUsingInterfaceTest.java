@@ -2,12 +2,12 @@ package com.flurry.example.container;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 
 import org.junit.Test;
 
 import com.flurry.example.container.classLoader.ConditionalDelegationClassLoader;
 import com.flurry.example.container.classLoader.PostDelegationClassLoader;
-import com.flurry.example.container.classLoader.StandAloneClassLoader;
 
 public class ContainerUsingInterfaceTest extends ContainerTest
 {
@@ -35,7 +35,7 @@ public class ContainerUsingInterfaceTest extends ContainerTest
 			public ClassLoader factory() throws MalformedURLException
 			{
 				// don't load any classes from the parent
-				return new StandAloneClassLoader(buildClassPath());
+				return new URLClassLoader(buildClassPath(), null);
 			}
 		});
 	}

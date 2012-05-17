@@ -2,10 +2,9 @@ package com.flurry.example.container;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 
 import org.junit.Test;
-
-import com.flurry.example.container.classLoader.StandAloneClassLoader;
 
 public class ContainerUsingLibraryTest extends ContainerTest
 {
@@ -20,7 +19,7 @@ public class ContainerUsingLibraryTest extends ContainerTest
 	{
 		return new URL[] { URLUtils.buildJarUrl(moduleJar),		// required
 						   URLUtils.buildJarUrl(apiJar),		// required for stand-alone class loader
-						   URLUtils.buildJarUrl(libJar) };		// not required, but exposes a memory leak with default delegation
+						   URLUtils.buildJarUrl(libJar) };		// required for stand-alone class loader
 	}
 
 	@Override
@@ -43,7 +42,7 @@ public class ContainerUsingLibraryTest extends ContainerTest
 			public ClassLoader factory() throws MalformedURLException
 			{
 				// don't load any classes from the parent
-				return new StandAloneClassLoader(buildClassPath());
+				return new URLClassLoader(buildClassPath(), null);
 			}
 		});
 	}

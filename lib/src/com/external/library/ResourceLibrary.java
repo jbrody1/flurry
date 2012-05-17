@@ -1,17 +1,22 @@
 package com.external.library;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ResourceLibrary
 {
-	private static final ConcurrentMap<Class<?>, Resource> lookup = new ConcurrentHashMap<Class<?>, Resource>();
+	public static class Resource
+	{
+	}
 
-	public static Resource getResource(Class<?> clazz)
+	// simulate a 3rd party library that holds references to its clients
+	private static final Map<Class<?>, Resource> lookup = new HashMap<Class<?>, Resource>();
+
+	public static synchronized Resource getResource(Class<?> clazz)
 	{
 		if (!lookup.containsKey(clazz))
 		{
-			lookup.putIfAbsent(clazz, new Resource());
+			lookup.put(clazz, new Resource());
 		}
 
 		return lookup.get(clazz);
